@@ -57,7 +57,6 @@ double gradV_dblwl(double x, double /* t */) {
 // ----- Main code ----- //
 
 // BAOA (GSD) integrator as formulated in https://doi.org/10.1021/acs.jctc.2c00585
-//void BAOA(double &x, double &v) {
 double BAOA(double &x, double &v) {
 	double Ekin;
 	// starting from x_t, f_t, v_(t-1/2)
@@ -77,8 +76,8 @@ double BAOA(double &x, double &v) {
 	v += sigma * eta / m;
 	// [A] Second half step in position (10d)
 	x  += dt * v / 2.0;
-	return Ekin;
-} //Sortir vitesses et vérifier corrélations sur les vitesses au lieu des positions.
+	return Ekin;  //might not need Ekin all the time and change BAOA() to void BAOA()
+}
 
 // Main simulation function
 void simulate() {
@@ -174,31 +173,4 @@ int main(void) {
 	-> no memory possible inside the code.
 * Only 1D dynamics.
 /*///  ------
-
-
-
-
-// ~~~~~~~~~ Poubelle de code ~~~~~~~~~ //
-
-
-
-
-/*
-	if (biased_dynamics == false) {
-		Vbias = Vbias_nul;
-		gradVbias = gradVbias_nul;
-	} else {    //if (biased_dynamics ==true) {
-		if (bias_type == constant) {  // Add a constant value to the potential
-			Vbias = Vbias_const;
-			gradVbias = gradVbias_const;
-		} else if (bias_type == harmonic) { //Add an harmonic potential
-			Vbias = Vbias_harm;
-			gradVbias = gradVbias_harm;
-		} else if (bias_type == ABMD) {
-			Vbias = Vbias_ABMD;
-			gradVbias = gradVbias_ABMD;
-		}
-	}
-*/
-
 

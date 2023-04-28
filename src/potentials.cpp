@@ -6,7 +6,6 @@
 
 extern const double k, A, B;
 extern const double k_bias, cstbias, alpha;
-//double G0_init, G0;
 
 
 // ~~~~~~~~~ Constants biases ~~~~~~~~~ //
@@ -15,7 +14,7 @@ extern const double k_bias, cstbias, alpha;
 double Vbias_nul(double /* x */, double /* t */) {
 	return 0.;
 }
-double gradVbias_nul(double /* x */) {
+double gradVbias_nul(double /* x */, double /* t */) {
 	return 0.;
 }
 
