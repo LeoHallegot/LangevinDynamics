@@ -27,3 +27,4 @@ extern const double cstbias = C/2.0; //constant bias
 // - time-dependant - //
 extern const double v_bias = 8.0/(dt*num_steps); // x~[-5;5]; time to walk the entire path ~ 10/v_bias
 								  // we want at *least* 10.000 time steps => v_bias<0.001.
+

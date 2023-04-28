@@ -47,17 +47,17 @@ double gradV_harm(double x, double /* t */) {
 }
 
 // Double well potential
-double V_dblwl(double x, double /* t */) {  //Double puit harmonique
-	return  A*pow(x,4) - B*pow(x,2) + C + Vbias(x);
+double V_dblwl(double x, double t) {  //Double puit harmonique
+	return  A*pow(x,4) - B*pow(x,2) + C + Vbias(x,t);
 }
-double gradV_dblwl(double x, double /* t */) {
-	return 4.0*A*pow(x,3) - 2.0*B*x + gradVbias(x);
+double gradV_dblwl(double x, double t) {
+	return 4.0*A*pow(x,3) - 2.0*B*x + gradVbias(x,t);
 }
 
 // ----- Main code ----- //
 
 // BAOA (GSD) integrator as formulated in https://doi.org/10.1021/acs.jctc.2c00585
-double BAOA(double &x, double &v) {
+double BAOA(double &x, double &v, double &t) {
 	double Ekin;
 	// starting from x_t, f_t, v_(t-1/2)
 	// [B] Eq. (10a) split into two half-steps
@@ -95,18 +95,18 @@ void simulate() {
 	energy_file.open("energies.dat");
 	
     for (int i = 0; i < num_steps; i++) {
-        Ekin = BAOA(x, v); // Update position, velocity, and time using BAOA integrator
+        Ekin = BAOA(x, v, t); // Update position, velocity, and time using BAOA integrator
         
         if (i%outfreq == 0) {
 		    input_optle << t << "\t" << x << endl;  //Writing colvar file for optle.
-		    total_file << t << "\t" << x << "\t" << -gradVbias(x) << endl; // A more complete ouput.
-        	energy_file << t << "\t" << Ekin << "\t" << V(x) << "\t" << Ekin+V(x) << "\t" << Vbias(x) <<endl;
+		    total_file << t << "\t" << x << "\t" << -gradVbias(x,t) << endl; // A more complete ouput.
+        	energy_file << t << "\t" << Ekin << "\t" << V(x,t) << "\t" << Ekin+V(x,t) << "\t" << Vbias(x,t) <<endl;
         	//energy : set gamma to 0, allows to check if newtonian dynamics is ok.
         }
 		t+=dt;
 		if (bias_type>0) {
-			if (abs(V(x)) > 2.5*abs(C)) { //add a x>0 condition ?
-				cout<<"Stoping the simulation at t="<<t<<", x="<<x<<", V(x)="<<V(x)<<endl;
+			if (abs(V(x, t)) > 2.5*abs(C)) { //add a x>0 condition ?
+				cout<<"Stoping the simulation at t="<<t<<", x="<<x<<", V(x,t)="<<V(x,t)<<endl;
 				cout<<"The particule reached a potential that is twice the theoretical barrier H="<<C<<endl;
 				break; //Arbitrary : if the particule goes too high on the sides we stop.
 				// Useful only with biased potentials.

@@ -23,7 +23,7 @@ double Vbias_const(double x, double /* t */) {  //But only outside of the barrie
 	if (A*pow(x,4) - B*pow(x,2) < cstbias){return  cstbias;}
 	else {return 0.;}
 }
-double gradVbias_const(double /* x */) {
+double gradVbias_const(double /* x */, double /* t */) {
 	return 0.; 
 }
 

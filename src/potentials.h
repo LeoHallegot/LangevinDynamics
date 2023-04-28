@@ -6,26 +6,26 @@
 
 
 // No bias
-double Vbias_nul(double /* x */);
-double gradVbias_nul(double /* x */);
+double Vbias_nul(double /* x */, double /* t */);
+double gradVbias_nul(double /* x */, double /* t */);
 
 // constant bias
-double Vbias_const(double x);
-double gradVbias_const(double /* x */);
+double Vbias_const(double x, double /* t */);
+double gradVbias_const(double /* x */, double /* t */);
 
 //Harmonic bias
-double Vbias_harm(double x);
-double gradVbias_harm(double x);
+double Vbias_harm(double x, double /* t */);
+double gradVbias_harm(double x, double /* t */);
 
 
 // ~~~~~~~~~ Time dependants biases ~~~~~~~~~ //
 // Adiabatic bias
-double Vbias_ABMD(double x);
-double gradVbias_ABMD(double x);
+double Vbias_ABMD(double x, double /* t */);
+double gradVbias_ABMD(double x, double /* t */);
 
 // Steered bias
-double Vbias_steered(double x);
-double gradVbias_steered(double x);
+double Vbias_steered(double x, double t);
+double gradVbias_steered(double x, double t);
 
 
 /*
