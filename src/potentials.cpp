@@ -64,20 +64,17 @@ double gradVbias_ABMD(double x, double /* t */) {
 // Problem/bug supposed.
 
 // Weird behavior obtained with v=0.0005; k=0.005 => the system was able to switch back to left well
-// TODO : implement steered correctly
 double Vbias_steered(double x, double t) {
-	static double t_local = 0.;
+//	static double t_local = 0.;
 	double x_init = -4.0;
-	double x_ref = x_init + v_bias*t_local;
-	t_local += dt;
+	double x_ref = x_init + v_bias*t;
+//	t_local += dt;
 	return 0.5*k_bias*(x - x_ref)*(x - x_ref);
 }
 
 double gradVbias_steered(double x, double t) {
-	static double t_local = 0.;
 	double x_init = -4.0;
-	double x_ref = x_init + v_bias*t_local;
-	t_local += dt;
+	double x_ref = x_init + v_bias*t;
 	return k_bias*(x - x_ref);
 }
 
