@@ -26,6 +26,12 @@ double gradVbias_ABMD(double x, double /* t */);
 // Steered bias
 double Vbias_steered(double x, double t);
 double gradVbias_steered(double x, double t);
+//Back and forth
+double Vbias_ABMD_AR(double x, double /* t */);
+double gradVbias_ABMD_AR(double x, double /* t */);
+
+double Vbias_steered_AR(double x, double t);
+double gradVbias_steered_AR(double x, double t);
 
 
 /*
