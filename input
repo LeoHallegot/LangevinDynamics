@@ -1,0 +1,13 @@
+inital_pos              -4.35
+mass                     1.0
+gamma                    10.0
+BoltzmannTemp            1.0
+timestep                 0.001
+numb_of_steps            35000000
+output_freq              1000
+spring_const_unbiased    1.0
+double_well_A            0.05
+double_well_B            1.2
+spring_const_biased      0.55
+Type_of_the_potential    1
+Type_of_the_bias         3

@@ -6,7 +6,7 @@
 #include "constants.h"
 #include "potentials.h"
 
-#include <typeinfo>
+//#include <typeinfo>
 
 using namespace std;
 
@@ -16,24 +16,20 @@ random_device rd;
 mt19937 gen(rd());
 normal_distribution<double> dist(0.0, 1.0);
 
-// ----- Constants ----- //
-extern const double x_init;
-extern const double m, gamma_Lang, dt, kt, sigma;
-// ----- Simulation parameters ----- //
-extern const int num_steps, outfreq;  //prints 1 line every outfreq steps
-// ----- Well parameters ----- //
-extern const double k, A, B, C;
-// ----- Bias parameters ----- //
-extern const double k_bias, cstbias;
-// ----- Choice of the bias ----- //
-enum {
+enum bias_type_t {
 	nobias,
 	constant,
 	harmonic,
 	ABMD,
 	steered,
+	n_bias_types
 	};
-int bias_type = ABMD;
+enum {
+	harmonic_potential,
+	dblwl,
+	};
+
+// Passer la fonction en argument si pas d'autres solutions.
 // ----- Potential functions ----- //
 std::function<double(double, double)> V, gradV, Vbias, gradVbias;
 //Harmonic potential function
@@ -54,7 +50,7 @@ double gradV_dblwl(double x, double t) {
 
 // #### ------- Main code ------- #### //
 
-// BAOA (GSD) integrator as formulated in https://doi.org/10.1021/acs.jctc.2c00585
+// BAOA (GSD) integrator as formulated in https://doorg/10.1021/acs.jctc.2c00585
 // Code taken from colvar module : https://github.com/Colvars/colvars
 double BAOA(double &x, double &v, double &t) {
 	double Ekin;
@@ -95,10 +91,10 @@ void simulate() {
 	
     for (int i = 0; i < num_steps; i++) {
         Ekin = BAOA(x, v, t); // Update position, velocity, and time using BAOA integrator
-        
+        double x_bias = x_init + v_bias*t; //For SMD
         if (i%outfreq == 0) {
 		    input_optle << t << "\t" << x << endl;  //Writing colvar file for unbiased optle.
-		    total_file << t << "\t" << x << "\t" << -gradVbias(x,t) << endl; // More complete ouput for biased optle.
+		    total_file << t << "\t" << x << "\t" << -gradVbias(x,t) << "\t" << v << endl; // More complete ouput for biased optle.
         	energy_file << t << "\t" << Ekin << "\t" << V(x,t) << "\t" << Ekin+V(x,t) << "\t" << Vbias(x,t) <<endl;
         	//energy : set gamma to 0, allows to check if newtonian dynamics is ok.
         }
@@ -119,7 +115,25 @@ void simulate() {
 }
 
 // Main function
-int main(void) {
+int main(int argc, char* argv[]) {
+    Inputs I;
+    I.initialize_vectors();
+    if (argc == 1) { //If inputfile read it, otherwise default
+        I.default_initialization();
+        cout<<"No input given, defaut values are used"<<endl;
+    } else if (argc == 2) {
+	    string input_file = argv[1];
+	    cout<<"reading from "<<input_file<<endl;
+	    I.read(input_file);
+	    I.init_values_with_input();
+    } else {
+        cout<<"Too many arguments"<<endl;
+        exit(EXIT_FAILURE);
+    }
+    I.print_inputs();
+    
+    cout<<bias_type<<" "<<ABMD<<" "<<potential_type<<endl;
+    
 	switch (bias_type) {
 		case nobias :
 			Vbias = Vbias_nul;
@@ -149,10 +163,26 @@ int main(void) {
 	}
 
 	cout<<"Double well potential, barrier "<<C<<" kbT"<<endl<<endl;
-	V = V_dblwl;
-	gradV = gradV_dblwl;
+	switch (potential_type) {
+		case harmonic_potential :
+			V = V_harm;
+			gradV = gradV_harm;
+			cout<<"harmonic potential"<<endl;
+			break;
+		case dblwl :
+			V = V_dblwl;
+			gradV = gradV_dblwl;
+			cout<<"double well potential"<<endl;
+			break;
+		default :
+			cout<<"no potential chosen"<<endl;
+			V = V_dblwl;
+			gradV = gradV_dblwl;
+			cout<<"By default, using double well potential"<<endl;
+			break;
+	}
 	simulate();
-	cout<<"Analytic form of the well : "<<A<<"*x**4 - "<<B<<"*x**2 + "<<C<<endl;
+//	cout<<"Analytic form of the well : "<<A<<"*x**4 - "<<B<<"*x**2 + "<<C<<endl;
 	if (bias_type == harmonic) {
 		cout<<"Biased potential : "<<0.5*k_bias<<" * x**2"<<endl;
 		cout<<"total : "<<A<<"*x**4 - "<<B<<"*x**2 + "<<C<<" + "<<0.5*k_bias<<" * x**2"<<endl;

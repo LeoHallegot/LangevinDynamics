@@ -4,8 +4,8 @@
 #include "potentials.h"
 #include "constants.h"
 
-extern const double k, A, B;
-extern const double k_bias, cstbias, alpha;
+//extern const double k, A, B;
+//extern const double k_bias, cstbias, alpha;
 
 
 // ~~~~~~~~~ Constants biases ~~~~~~~~~ //
@@ -63,4 +63,25 @@ double gradVbias_steered(double x, double t) {
 	double x_ref = x_init + v_bias*t;
 	return k_bias*(x - x_ref);
 }
+
+
+
+//// ~~~~~~~~~ Unbiased potentials ~~~~~~~~~ //
+
+////Harmonic potential function
+//double V_harm(double x, double /* t */) {
+//    return 0.5 * k * x * x;
+//}
+//double gradV_harm(double x, double /* t */) {
+//    return k * x;
+//}
+//// Double well potential
+//double V_dblwl(double x, double t) {  //Double puit harmonique
+//	return  A*pow(x,4) - B*pow(x,2) + C + Vbias(x,t);
+//}
+//double gradV_dblwl(double x, double t) {
+//	return 4.0*A*pow(x,3) - 2.0*B*x + gradVbias(x,t);
+//}
+
+
 
